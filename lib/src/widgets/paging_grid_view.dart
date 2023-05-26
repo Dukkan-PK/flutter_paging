@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart' as widgets;
 
 import 'base_widget.dart';
-import 'builder.dart';
 import 'default/load_more_widget.dart';
 import 'default/paging_default_loading.dart';
 import 'paging_state.dart';
@@ -17,12 +16,14 @@ class PagingGridView<T> extends BaseWidget<T> {
   final widgets.EdgeInsets? padding;
   final SliverGridDelegate delegate;
   final bool isEnablePullToRefresh;
+  final widgets.Widget topBar;
 
   PagingGridView(
       {Key? key,
       this.padding,
       required this.delegate,
       this.isEnablePullToRefresh = true,
+      this.topBar = const SizedBox(),
       required ValueIndexWidgetBuilder<T> itemBuilder,
       WidgetBuilder? emptyBuilder,
       WidgetBuilder? loadingBuilder,
@@ -130,10 +131,10 @@ class GridViewState<T> extends State<PagingGridView<T>> {
       }
     }
   }
-  
+
   @override
   void setState(fn) {
-    if(mounted) {
+    if (mounted) {
       super.setState(fn);
     }
   }
@@ -158,6 +159,9 @@ class GridViewState<T> extends State<PagingGridView<T>> {
           child: CustomScrollView(
             keyboardDismissBehavior: widget.keyboardDismissBehavior,
             slivers: [
+              SliverToBoxAdapter(
+                child: widget.topBar ?? SizedBox.shrink(),
+              ),
               widgets.SliverPadding(
                 padding: widget.padding ?? EdgeInsets.zero,
                 sliver: child,
